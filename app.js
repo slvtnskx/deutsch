@@ -26,7 +26,20 @@ function saveUser(id, name) {
     store.put({ id, name });
 }
 
+async function retrieveUser(id) {
+    const transaction = db.transaction("users", "readwrite");
+    const store = transaction.objectStore("users");
+    return store.get(id);
+}
+
 
 document.getElementById("save").addEventListener("click", () => {
     saveUser(2, "Jane Doe");
+    console.log("saved")
 });
+
+document.getElementById("retrieve").addEventListener("click", () => {
+    retrieveUser(2).then((user) => {
+        console.log(user)
+    })
+})
