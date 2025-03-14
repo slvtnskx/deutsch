@@ -1,12 +1,13 @@
 
 const CACHE_NAME = "offline-pwa-v1";
 const ASSETS = [
-    "/",
-    "/index.html",
-    "/styles.css",
-    "/app.js",
-    "/icons/icon-192x192.png",
-    "/icons/icon-512x512.png"
+    '/deutsch/',
+    '/deutsch/index.html',
+    '/deutsch/styles.css',
+    '/deutsch/app.js',
+    '/deutsch/manifest.json',
+    '/deutsch/icons/icon-192x192.png',
+    '/deutsch/icons/icon-512x512.png'
 ];
 
 // Install event - Cache all necessary files
