@@ -7,7 +7,9 @@ const ASSETS = [
     '/deutsch/app.js',
     '/deutsch/manifest.json',
     '/deutsch/icons/icon-192x192.png',
-    '/deutsch/icons/icon-512x512.png'
+    '/deutsch/icons/icon-512x512.png',
+    '/deutsch/pages/gender.html',
+    '/deutsch/utils/db.js',
 ];
 
 // Install event - Cache all necessary files

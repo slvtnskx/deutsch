@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>General</title>
+    <link rel="stylesheet" href="/deutsch/pages/general.css"/>
+    <script defer type="module" src="/deutsch/pages/general2.js"></script>
+</head>
+
+<body>
+        <a id="home-button" href="/deutsch/index.html">Home</a>
+
+        <meter id="progress" min="0" max="100" value="0"></meter>
+
+        <label class="spelling-label">
+            <input type="checkbox" id="spelling" checked>
+            show spelling
+        </label>
+        
+        <form id="form">
+        <fieldset>
+            <label>
+                <audio src="/deutsch/audio/test.mp3" controls controlslist="nofullscreen nodownload noremoteplayback noplaybackrate"></audio>
+                <input type="radio" name="gender" value="masc">
+                <span>der</span> <span class="input-word"></span>
+            </label>
+            
+            <label>
+                <audio src="/deutsch/audio/test.mp3" controls controlslist="nofullscreen nodownload noremoteplayback noplaybackrate"></audio>
+                <input type="radio" name="gender" value="fem">
+                <span>die</span> <span class="input-word"></span>
+            </label>
+            <label>
+                <audio src="/deutsch/audio/test.mp3" controls controlslist="nofullscreen nodownload noremoteplayback noplaybackrate"></audio>
+                <input type="radio" name="gender" value="neuter">
+                <span>das</span> <span class="input-word"></span>
+            </label>
+            <label>
+                <audio src="/deutsch/audio/test.mp3" controls controlslist="nofullscreen nodownload noremoteplayback noplaybackrate"></audio>
+                <input type="radio" name="gender" value="plural">
+                <span>die</span> <span class="input-word"></span>
+            </label>
+        </fieldset>
+
+        <button class="submit-button">Submit</button>
+
+    </form>
+
+        <dialog id="output">
+            <p id="evaluation"></p>
+            <p id="translation"></p>
+            <button class="next-button">Next</button>
+        </dialog>
+
+</body>
+</html>

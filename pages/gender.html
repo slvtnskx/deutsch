@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <base href="/deutsch/">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gender</title>
+</head>
+<body>
+    <style>
+        audio {
+            width: 100px;
+        }
+        audio::-webkit-media-controls-palay-button {
+            display: block;
+        }
+
+        audio::-webkit-media-controls-mute-button,
+        audio::-webkit-media-controls-timeline {
+            display: none;
+        }
+
+
+        label {
+            display: block;
+        }
+
+        label span {
+            font-size: larger;
+        }
+
+        .submit-button {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 10px;
+            width: calc(100% - 20px);
+            padding: 0.5rem;
+            background-color: #f1f5f9;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #64748b;
+        }
+
+        /*still not disabled visually*/
+        .submit-button:disabled, 
+        .submit-button:disabled:hover,
+        .submit-button:disabled:focus,
+        .submit-button:disabled:active {
+            background-color: #e2e8f0;
+            color: #64748b;
+        }
+
+
+        fieldset {
+            border: none;
+            display: flex;
+            flex-direction: column;
+        }
+
+        fieldset label {
+            margin-bottom: 10px;
+            width: calc(100% - 20px);
+            padding: 0.5rem;
+            background-color: #f1f5f9;
+            transition: ease-in 0.2s;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        input[type="radio"] {
+            visibility: hidden;
+        }
+        label:has(input[type="radio"]:checked) {
+            background-color: #bcd9f7;
+        }
+
+        meter {
+            width: 100%;
+            height: 20px;
+            margin-bottom: 20px;
+        }
+
+        .spelling-label {
+            display: flex;
+            justify-self: end;
+        }
+
+        div#output {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            height: 200px;
+            width: 100%;
+            background-color: #97afd1;
+            transition: all 0.2s ease-in-out;
+        }
+
+        body.correct {
+            background-color: #b3f5be;
+        }
+        body.correct label:has(input[type="radio"]:checked) {
+            background-color: #76f896;
+        }
+        body.incorrect {
+            background-color: #f8d1d1;
+        }
+        body.incorrect label:has(input[type="radio"]:checked) {
+            background-color: #f77e7e;
+        }
+        body.incorrect label.answer {
+            background-color: #76f896;
+        }
+        
+        
+
+    </style>
+        <a href="/deutsch/index.html">Home</a>
+        <meter id="progress" min="0" max="100" value="0"></meter>
+        <label class="spelling-label">
+            <input type="checkbox" id="spelling" checked>
+            show spelling
+        </label>
+        <form id="form">
+        <fieldset>
+            <label>
+                <audio src="/deutsch/audio/test.mp3" controls controlslist="nofullscreen nodownload noremoteplayback noplaybackrate"></audio>
+                <input type="radio" name="gender" value="masc">
+                <span>der</span> <span class="input-word"></span>
+            </label>
+            
+            <label>
+                <audio src="/deutsch/audio/test.mp3" controls controlslist="nofullscreen nodownload noremoteplayback noplaybackrate"></audio>
+                <input type="radio" name="gender" value="fem">
+                <span>die</span> <span class="input-word"></span>
+            </label>
+            <label>
+                <audio src="/deutsch/audio/test.mp3" controls controlslist="nofullscreen nodownload noremoteplayback noplaybackrate"></audio>
+                <input type="radio" name="gender" value="neuter">
+                <span>das</span> <span class="input-word"></span>
+            </label>
+            <label>
+                <audio src="/deutsch/audio/test.mp3" controls controlslist="nofullscreen nodownload noremoteplayback noplaybackrate"></audio>
+                <input type="radio" name="gender" value="plural">
+                <span>die</span> <span class="input-word"></span>
+            </label>
+        </fieldset>
+
+        <button class="submit-button">Submit</button>
+
+    </form>
+
+        <div id="output">
+            <output>abcd</output>
+            <button class="next-button">Next</button>
+        </div>
+
+    <script type="module">
+
+const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+
+/*
+let popBuffer;
+
+fetch('/deutsch/sounds/pop.mp3')
+    .then(response => response.arrayBuffer())
+    .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+    .then(buffer => {
+        popBuffer = buffer;
+    });
+
+function playClickSound() {
+    if (!popBuffer) return;
+    const source = audioContext.createBufferSource();
+    source.buffer = popBuffer;
+    source.connect(audioContext.destination);
+    source.start();
+}
+
+document.querySelectorAll('body').forEach(element => {
+    element.addEventListener('click', playClickSound);
+});
+*/
+const soundLinks = ['/deutsch/sounds/pop.mp3', '/deutsch/sounds/correct.mp3', '/deutsch/sounds/incorrect.mp3']
+const soundBuffers = {
+    pop: null,
+    correct: null,
+    incorrect: null
+}
+
+
+soundLinks.forEach(link => {
+    fetch(link)
+    .then(response => response.arrayBuffer())
+    .then(arrayBuffer => audioContext.decodeAudioData(arrayBuffer))
+    .then(buffer => {
+        const a = link.split("/")
+        const b = a[a.length - 1]
+        const c = b.split(".")[0]
+        soundBuffers[c] = buffer
+    });
+})
+
+
+function playSound(type) {
+    console.log(type)
+    const source = audioContext.createBufferSource();
+    if (type === "click" && soundBuffers.pop){
+        source.buffer = soundBuffers.pop;
+    }
+    else if (type === "correct" && soundBuffers.correct){
+        source.buffer = soundBuffers.correct;
+    }
+    else if (type === "incorrect" && soundBuffers.incorrect){
+        source.buffer = soundBuffers.incorrect;
+    } else { return }
+    
+    source.connect(audioContext.destination);
+    source.start();
+}
+
+
+
+
+
+
+
+import { getRandomWord } from "./utils/db.js"
+
+
+function getRandomNoun(){
+    let word;
+
+    while(true){
+        word = getRandomWord()
+        if (word.genders[0] !== undefined && word.posEnglish === "Noun") {
+            break;
+        } 
+    }
+
+    return {
+        text: word.text,
+        article: word.genders[0] === "mask." ? "masc" :
+        word.genders[0] === "fem." ? "fem" :
+        word.genders[0] === "neutr." ? "neuter" : "plural",
+    }
+}
+
+
+const wordsTested = []
+
+const ROUNDS = 10
+document.getElementById("progress").max = ROUNDS * 10
+
+let correctAnswers = 0
+let wrongAnswers = 0
+
+const form = document.getElementById("form")
+const wordSpans = form.getElementsByClassName("input-word")
+const spelling = document.getElementById("spelling")
+
+const output = document.getElementById("output")
+
+const submitButton = document.querySelector(".submit-button")
+
+const body = document.body
+
+const labels = document.querySelectorAll('label:has(input[type="radio"])');
+
+labels.forEach(element => {
+    element.addEventListener('click', () => {playSound("click")});
+})
+
+spelling.addEventListener("change", (event) => {
+    if (event.target.checked) {
+        for (const wordSpan of wordSpans) {
+            wordSpan.hidden = false
+        }
+    } else {
+        for (const wordSpan of wordSpans) {
+            wordSpan.hidden = true
+        }
+    }
+});
+
+    //fix bug where this runs out of space before the end of the session
+    //bit slow?
+    const step = 10
+    function updateProgressBar(){
+        let startValue = progress.value;
+        let targetValue = Math.min(startValue + step, progress.max); 
+        let duration = 300; 
+        let startTime = performance.now();
+
+        function animateProgress(currentTime) {
+            let elapsedTime = currentTime - startTime;
+            let progression = Math.min(elapsedTime / duration, 1); 
+            progress.value = startValue + progression * (targetValue - startValue);
+
+            if (progression < 1) {
+                requestAnimationFrame(animateProgress);
+            }
+        }
+
+        requestAnimationFrame(animateProgress);
+    }
+
+function loop(iteration = 0) {
+    if (iteration !== 0){
+        updateProgressBar()
+        //theres gotta be a better way to do this
+    }
+    
+    if (iteration > ROUNDS) {
+        localStorage.setItem("correctAnswers", correctAnswers)
+        localStorage.setItem("wrongAnswers", wrongAnswers)
+        localStorage.setItem("wordsTested", JSON.stringify(wordsTested))
+        location.replace("/deutsch/index.html");
+    }
+
+    body.classList.remove("correct", "incorrect")
+    form.inert = false
+    output.hidden = true
+
+
+    
+
+    const word = getRandomNoun()
+    const currentWord = {word: word.text, correct: undefined}
+
+    for (const wordSpan of wordSpans) {
+        wordSpan.innerText = word.text
+
+        wordSpan.parentElement.classList.remove("answer")
+        if (word.article === wordSpan.parentElement.getElementsByTagName("input")[0].value){
+            wordSpan.parentElement.classList.add("answer")
+        }
+    }
+
+
+    submitButton.disabled = true
+
+    form.addEventListener("input", () => submitButton.disabled = false) //fix the accumulation of listeners
+
+    form.addEventListener("submit", function x(event) {
+        console.log("submit event run")
+        event.preventDefault()
+        if (form.gender.value !== "") {
+        
+        if (word.article === form.gender.value) {
+            playSound("correct")
+            correctAnswers++
+            currentWord.correct = true
+            wordsTested.push(currentWord)
+            body.classList.add("correct")
+            onSubmit(iteration, x)
+        } else {
+            playSound("incorrect") 
+            wrongAnswers++
+            currentWord.correct = false
+            wordsTested.push(currentWord)
+            body.classList.add("incorrect")
+            onSubmit(iteration, x)
+        }
+        }
+    })            
+}
+
+function onSubmit(iteration, x){
+    submitButton.disabled = true
+    form.inert = true
+
+    output.hidden = false
+    output.querySelector("output").innerText = "correct: 456"
+    output.querySelector("button").addEventListener("click", () => {
+        form.reset()
+        form.removeEventListener("submit", x)
+        loop(iteration + 1)
+    })
+
+
+}
+
+loop()
+
+    </script>
+</body>
+</html>
