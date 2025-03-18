@@ -1,11 +1,13 @@
 import { playSound } from "../utils/sounds.js"
 import { getRandomNoun } from "../utils/db.js"
 import { updateProgressBar } from "../utils/progressBar.js"
-
+import { speak } from "../utils/tts.js"
 
 const labels = document.querySelectorAll('label:has(input[type="radio"])');
 labels.forEach(element => {
-    element.addEventListener('click', () => {playSound("click")});
+    element.addEventListener('click', () => {
+        speak(element.innerText)
+    });
 })
 
 const spelling = document.getElementById("spelling")
@@ -37,7 +39,7 @@ const wordSpans = form.getElementsByClassName("input-word")
 const inputs = Array.from(wordSpans).map((span) => span.parentElement.getElementsByTagName("input")[0])
 
 
-const ROUNDS = 3
+const ROUNDS = 15
 
 let word = ""
 let round = 0
@@ -56,6 +58,7 @@ function nextIteration() {
     if (round === ROUNDS) {
         document.body.innerHTML = `
         <a id="home-button" href="/deutsch/index.html">Home</a>
+        <a href="/deutsch/pages/general.html">Another round</a>
         <p>correct: ${correctAnswers}</p>
         <p>incorrect: ${wrongAnswers}</p>
         <pre>${JSON.stringify(wordsTested, null, 2)}</pre>
@@ -81,7 +84,7 @@ function nextIteration() {
     }
 }
 
-nextButton.addEventListener("click", () => { nextIteration() } )
+nextButton.addEventListener("click", () => { playSound("click"); nextIteration() } )
 
 function onSubmit(correctness) {
     form.inert = true
@@ -94,6 +97,7 @@ function onSubmit(correctness) {
 }
 
 form.addEventListener("submit", (event) => {
+    playSound("click")
     event.preventDefault()
     if (form.gender.value === word.article){
         onSubmit(true)

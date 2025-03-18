@@ -2,29 +2,23 @@
 body {
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-
+    background-color: #f2f2f2;
+    font-size: 1rem;
 }
-
-audio {
-    width: 100px;
-}
-audio::-webkit-media-controls-palay-button {
-    display: block;
-}
-
-audio::-webkit-media-controls-mute-button,
-audio::-webkit-media-controls-timeline {
-    display: none;
-}
-
 
 label {
     display: block;
+    
 }
 
 label span {
-    font-size: larger;
+    font-size: 1.3rem;
 }
+
+svg {
+    height: 1lh;
+}
+
 
 .submit-button {
     position: fixed;
@@ -38,20 +32,10 @@ label span {
     border: 1px solid #cbd5e1;
     border-radius: 0.25rem;
     cursor: pointer;
-    font-size: 1rem;
     font-weight: bold;
     color: #64748b;
+    font-size: 1.2rem;
 }
-
-/*still not disabled visually*/
-.submit-button:disabled, 
-.submit-button:disabled:hover,
-.submit-button:disabled:focus,
-.submit-button:disabled:active {
-    background-color: #e2e8f0;
-    color: #64748b;
-}
-
 
 fieldset {
     border: none;
@@ -63,12 +47,11 @@ fieldset label {
     margin-bottom: 10px;
     width: calc(100% - 20px);
     padding: 0.5rem;
-    background-color: #f1f5f9;
+    background-color: #e9e7e7;
     transition: ease-in 0.2s;
     border: 1px solid #cbd5e1;
     border-radius: 0.25rem;
     cursor: pointer;
-    font-size: 1rem;
     font-weight: bold;
     color: #64748b;
     display: flex;
@@ -78,12 +61,13 @@ fieldset label {
 
 input[type="radio"] {
     visibility: hidden;
+    width: 0;
 }
 label:has(input[type="radio"]:checked) {
-    background-color: #bcd9f7;
+    background-color: #d3edfd
 }
 
-meter {
+progress {
     width: 100%;
     height: 20px;
     margin-bottom: 20px;
@@ -94,21 +78,27 @@ meter {
     justify-self: end;
 }
 
-#output:open {
-    height: 200px;
-}
+
 
 #output {
     position: fixed;
     bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    height: 0px;
     width: 100%;
-    background-color: #5d9efa;
-    padding: 0;
     border: 0;
+    padding: 0;
     transition: height 0.3s ease-in-out;
+    
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; 
+    
+    height: 0; 
+    overflow: auto;
+}
+
+
+#output:open { 
+    height: 200px;
 }
 
 @starting-style {
@@ -117,9 +107,8 @@ meter {
     }
 }
 
-
-
 #output .next-button {
+    margin-inline: 10px;
     margin-bottom: 10px;
     width: calc(100% - 20px);
     padding: 0.5rem;
@@ -127,34 +116,45 @@ meter {
     border: 1px solid #cbd5e1;
     border-radius: 0.25rem;
     cursor: pointer;
-    font-size: 1rem;
     font-weight: bold;
     color: #64748b;
-}
-
-#translation {
-
+    font-size: 1.2rem;
+    margin-top: auto; 
 }
 
 #evaluation {
+    margin-inline: 10px;
+    margin-top: 10px;
     font-weight: bolder;
+    font-size: 1.15rem;
+    margin-block: 0;
+    
+}
+
+#translation {
+    margin-inline: 10px;
+    font-size: 1.1rem;
 }
 
 
 
-body.correct {
-    background-color: #b3f5be;
+
+body.correct #output {
+    background-color: #d7ffb8;
+    color: #4e9102;
 }
 body.correct label:has(input[type="radio"]:checked) {
-    background-color: #76f896;
+    background-color: #d7ffb8;
 }
-body.incorrect {
-    background-color: #f8d1d1;
+
+body.incorrect #output {
+    background-color: #ffdfe0;
+    color: #b92121;
 }
 body.incorrect label:has(input[type="radio"]:checked) {
-    background-color: #f77e7e;
+    background-color: #ffdfe0;
 }
 body.incorrect label.answer {
-    background-color: #76f896;
+    background-color: #d7ffb8;
 }
 
